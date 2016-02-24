@@ -1,0 +1,82 @@
+﻿<Window x:Class="DB73.Views.MainWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DB73.Views"
+        xmlns:vm="clr-namespace:DB73.ViewModels"
+        mc:Ignorable="d"
+        
+        Title="{Binding Title}" 
+        
+        Width="1600"
+        Height="900"
+
+        MinWidth="1280"
+        MinHeight="720"
+        
+        WindowStartupLocation="CenterScreen"
+        Background="AliceBlue"
+        WindowState="Maximized"
+        >
+
+    <Window.Resources>
+        <ResourceDictionary Source="_resources.xaml"/>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel></vm:MainWindowViewModel>
+    </Window.DataContext>
+
+    <Grid Margin="5,5,5,5">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--CONTROLS-->
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,5,0,0">
+
+            <Button Content="ДОКУМЕНТЫ" Style="{StaticResource MainWindowButtonStyle}" Command="{Binding ShowDocumentsView}" IsEnabled="{Binding DocumentsButtonEnabled, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="{Binding MessageButtonContent}" 
+                    Style="{StaticResource MainWindowButtonStyle}" 
+                    Background="{Binding MessageButtonColor}"
+                    Command="{Binding ShowMessagesView}" />
+            <!--<Button Content="ЗАДАЧИ" Style="{StaticResource MainWindowButtonStyle}"/>-->
+            <Button Content="ИНВЕНТАРЬ" Style="{StaticResource MainWindowButtonStyle}" Command="{Binding ShowInventoryView}"/>
+
+            <Menu   Grid.Row="0"
+                    KeyboardNavigation.TabNavigation="Cycle"                        
+                    Background="AliceBlue"
+                    FontWeight="Regular"
+                    Margin="10,10,0,0"
+                    FontSize="16"
+                    Foreground="DarkSlateGray">
+
+                <MenuItem Header="ПРОГРАММА">
+                    <MenuItem Header="Настройки учетной записи" Command="{Binding ShowUserOptionsView}" FontWeight="Normal" FontSize="14" />
+                    <MenuItem Header="Cвязь с разработчиком" Command="{Binding ShowBugTicketsView}" FontWeight="Normal" FontSize="14" />
+                    <MenuItem Header="О программе" Command="{Binding ShowAboutView}" FontWeight="Normal" FontSize="14" />
+                    <Separator />
+                    <MenuItem Header="Сменить пользователя" Command="{Binding RestartSystem}" FontWeight="Normal" FontSize="14"/>
+                    <MenuItem Header="Выход" Command="{Binding ExitSystem}" FontWeight="Normal" FontSize="14"/>
+
+                    <Separator Visibility="{Binding AdminToolsVisible, Converter={StaticResource BoolToVis}}" />
+                    <MenuItem Header="Инструменты администратора" 
+                              Command="{Binding ShowAdminToolsView}" 
+                              Visibility="{Binding AdminToolsVisible, Converter={StaticResource BoolToVis}}" 
+                              FontWeight="Normal" FontSize="14" />
+                </MenuItem>
+            </Menu>
+        </StackPanel>
+
+        <!--WORKSPACES-->
+        <HeaderedContentControl Grid.Row="1"
+            Margin="0,5,0,0"
+            Content="{Binding Workspaces}"
+            ContentTemplate="{StaticResource WorkspacesTemplate}"
+            Style="{StaticResource MainHCCStyle}" />
+    </Grid>
+</Window>

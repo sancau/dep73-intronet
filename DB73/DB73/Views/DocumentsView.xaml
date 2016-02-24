@@ -1,0 +1,562 @@
+﻿<UserControl x:Class="DB73.Views.DocumentsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary Source="_resources.xaml"/>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Horizontal" Margin="40,20,0,10" HorizontalAlignment="Left">
+        <!-- TREE VIEW -->
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!-- TITLE -->
+            <StackPanel Orientation="Vertical" Grid.Row="0">
+                <Label
+                        Content="База документов" 
+                        Foreground="{StaticResource PrimaryTitleBrush}"
+                        FontSize="24"
+                        Margin="0,0,0,20" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
+                    <!-- SEARCH LABEL -->
+                    <Label  HorizontalAlignment="Left"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource PrimaryTitleBrush}"
+                            Margin="0,0,0,0"
+                            Content="Поиск:" 
+                            FontSize="14"
+                            />
+                    <!-- SEARCH STRING -->
+                    <TextBox HorizontalAlignment="Left" 
+                             Background="Transparent"
+                             Width="343" Height="27" 
+                             Margin="0,0,0,0" 
+                             Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}" RenderTransformOrigin="0.506,0.295"/>
+                    <!-- New folder button -->
+                    <Button Margin="10,0,0,0"
+                                Padding="5,0,5,0"
+                                FontSize="14"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                Content="Новая папка"
+                                Visibility="{Binding IsSuperUser, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding ShowAddFolder}" />
+                </StackPanel>
+            </StackPanel>
+            <!-- Documents tree view -->
+            <TreeView   Name="DocumentTreeView"                       
+                        Grid.Row="1"
+                        MinWidth="500"  
+                        BorderBrush="LightGray" 
+                        Style="{StaticResource ResourceKey=SearchableTreeView}" 
+                        ItemsSource="{Binding TreeNodes, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                        Background="Transparent"
+                        Margin="5,10,10,10"
+                        MouseDoubleClick="TreeView_MouseDoubleClick"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+        </Grid>
+
+        <!-- RIGHT PANEL -->
+        <ScrollViewer   ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.CanContentScroll="True">
+
+            <StackPanel Orientation="Vertical">
+                <!-- FOLDER DETAILS -->
+                <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Left" 
+                        Margin="20,0,0,0" 
+                        Visibility="{Binding FolderDetailsVisible, 
+                                    Converter={StaticResource BoolToVis}, 
+                                    UpdateSourceTrigger=PropertyChanged}">
+                    <!-- TITLE -->
+                    <Label
+                    Content="Управление папкой " 
+                    Foreground="{StaticResource PrimaryTitleBrush}"
+                    FontSize="24"
+                    Margin="0,0,0,20" />
+
+                    <!-- FOLDER TOP MENU -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="5,0,5,5"
+                                Content="Добавить документ"
+                                Height="30"
+                                FontSize="14"
+                                Visibility="{Binding IsSuperUser, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding ShowImportDocument}" 
+                                />
+                        <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="40,0,5,5"
+                                Content="Добавить вложенную папку"
+                                Height="30"
+                                FontSize="14"
+                                Visibility="{Binding IsSuperUser, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding ShowAddSubfolder}" 
+                                />
+                        <Button 
+                                HorizontalAlignment="Right"
+                                Padding="12,0,12,0"
+                                Margin="25,0,5,5"
+                                Content="Импортировать дерево"
+                                Height="30"
+                                FontSize="14"
+                                Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding ImportTreeToFolder}" 
+                                />
+                    </StackPanel>
+
+                    <!-- FOLDER NAME -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Имя папки: " 
+                            FontSize="12"
+                            Width="200" 
+                            Margin="0,5,0,0" />
+                        <TextBox                             
+                            Width="420" 
+
+                            IsEnabled="{Binding IsAdminOrCreator}"                   
+                            Text="{Binding SelectedFolder.Name,                                           
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True, 
+                                            UpdateSourceTrigger=PropertyChanged}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                   
+                            FontSize="12"
+                            Margin="5,10,0,0" />
+                    </StackPanel>
+
+                    <!-- FOLDER ANNOTATION -->
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
+                            <Label
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="Аннотация к папке: " 
+                                FontSize="12"
+                                Width="200" 
+                                Margin="0,5,0,0" />
+                            <Label
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="(заполняется по необходимости)" 
+                                FontSize="12"
+                                Width="200" 
+                                Margin="0,5,0,0" />
+                        </StackPanel>
+                        <TextBox                             
+                            Width="420" 
+                  
+                            Height="50"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Visible"
+                            AcceptsReturn="True"   
+                            IsEnabled="{Binding IsAdminOrCreator}"
+                            Text="{Binding SelectedFolder.Annotation,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                   
+                            FontSize="12"
+                            Margin="5,10,0,0" />
+                    </StackPanel>
+
+                    <!-- FOLDER BOTTOM MENU -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button 
+                            HorizontalAlignment="Left"
+                            Padding="12,0,12,0"
+                            Margin="5,20,5,0"
+                            Content="Добавить к набору"
+                            Height="30"
+                            FontSize="14"
+                            Command="{Binding AddLink}" />
+                        <!-- Add to link package button -->
+                        <Button 
+                            HorizontalAlignment="Left"
+                            Padding="12,0,12,0"
+                            Margin="5,20,5,0"
+                            Content="Параметры доступа"
+                            Height="30"
+                            FontSize="14"
+                            Visibility="{Binding IsAdminOrCreator, Converter={StaticResource BoolToVis}}"
+                            Command="{Binding ShowAccessConfig}" />
+                        <!-- Access control button -->
+                        <Button 
+                            HorizontalAlignment="Left"
+                            Padding="12,0,12,0"
+                            Margin="5,20,5,0"
+                            Content="Cохранить изменения"
+                            Height="30"
+                            FontSize="14"
+                            Visibility="{Binding IsAdminOrCreator, Converter={StaticResource BoolToVis}}"
+                            Command="{Binding SaveFolderChanges}" />
+                        <!-- Save changes button -->
+                        <Button 
+                            HorizontalAlignment="Left"
+                            Padding="10,0,9,0"
+                            Margin="5,20,5,0"
+                            Content="Удалить папку"
+                            Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVis}}"
+                            Height="30"
+                            FontSize="14"
+                            Command="{Binding DeleteFolder}" />
+                        <!-- Delete folder button -->
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!-- DOCUMENT DETAILS -->
+                <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Left" 
+                        Margin="20,0,0,0" 
+                        Visibility="{Binding DocumentDetailsVisible, 
+                                    Converter={StaticResource BoolToVis}, 
+                                    UpdateSourceTrigger=PropertyChanged}">
+                    <!-- TITLE -->
+                    <Label
+                    Content="Управление документом " 
+                    Foreground="{StaticResource PrimaryTitleBrush}"
+                    FontSize="24"
+                    Margin="0,0,0,20" />
+
+                    <!-- DOCUMENT TOP MENU -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="5,0,5,5"
+                                Content="Открыть для чтения"
+                                Height="30"
+                                FontSize="14"
+                                Command="{Binding OpenReadOnly}" 
+                                />
+                        <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="40,0,5,5"
+                                Content="Открыть для редактирования"
+                                Height="30"
+                                FontSize="14"
+                                Command="{Binding OpenForEdit}" 
+                                />
+                        <Button 
+                                HorizontalAlignment="Right"
+                                Padding="12,0,12,0"
+                                Margin="25,0,5,5"
+                                Content="Запросить копию"
+                                Height="30"
+                                FontSize="14"
+                                Command="{Binding CopyDocumentToPrivateStorage}" 
+                                />
+                    </StackPanel>
+
+                    <!-- DOCUMENT NAME -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Имя документа: " 
+                            FontSize="12"
+                            Width="200" 
+                            Margin="0,5,0,0" />
+                        <TextBox                             
+                            Width="420" 
+  
+                            IsEnabled="{Binding IsAdminOrCreator}"                   
+                            Text="{Binding SelectedDocument.Name, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                   
+                            FontSize="12"
+                            Margin="5,5,0,0" />
+                    </StackPanel>
+
+                    <!-- DOCUMENT FOLDER -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Папка: " 
+                            FontSize="12"
+                            Width="200" 
+                            Margin="0,5,0,0" />
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="{Binding SelectedDocument.FolderName}" 
+                            FontSize="12"
+                            Width="420" 
+                            Margin="5,5,0,0" />
+                    </StackPanel>
+                    <Separator Margin="5,0,5,0" Foreground="LightGray" />
+
+                    <!-- BUSINESS TYPE -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Раздел архива: " 
+                            FontSize="12"
+                            Width="200" 
+                            Margin="0,5,0,0" />
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="{Binding SelectedDocument.BusinessType}" 
+                            FontSize="12"
+                            Width="420" 
+                            Margin="5,5,0,0" />
+                    </StackPanel>
+                    <Separator Margin="5,0,5,0" Foreground="LightGray" />
+
+                    <!-- DOCUMENT TYPE -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Тип документа: " 
+                            FontSize="12"
+                            Width="200" 
+                            Margin="0,5,0,0" />
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="{Binding SelectedDocument.Type}" 
+                            FontSize="12"
+                            Width="420" 
+                            Margin="5,5,0,0" />
+                    </StackPanel>
+                    <Separator Margin="5,0,5,0" Foreground="LightGray" />
+
+                    <!-- DOCUMENT ADD DATE / ADDER INFO -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Добавлен: " 
+                            FontSize="12"
+                            Width="200" 
+                            Margin="0,5,0,0" />
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="{Binding SelectedDocument.AddInfo, UpdateSourceTrigger=PropertyChanged}"
+                            FontSize="12"
+                            Width="420" 
+                            Margin="5,5,0,0" />
+                    </StackPanel>
+                    <Separator Margin="5,0,5,0" Foreground="LightGray" />
+
+                    <!-- DOCUMENT EDIT DATE / EDITOR INFO -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Последнее изменение: " 
+                            FontSize="12"
+                            Width="200" 
+                            Margin="0,5,0,0" />
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="{Binding SelectedDocument.EditInfo, UpdateSourceTrigger=PropertyChanged}" 
+                            FontSize="12"
+                            Width="420" 
+                            Margin="5,5,0,0" />
+                    </StackPanel>
+                    <Separator Margin="5,0,5,0" Foreground="LightGray" />
+
+                    <!-- DOCUMENT STATUS -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label 
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Статус: " 
+                            FontSize="12"
+                            Width="200" 
+                            Margin="0,5,0,0" />
+                        <Label 
+                            Foreground="{Binding StatusInfoColor, UpdateSourceTrigger=PropertyChanged}"
+                            Content="{Binding SelectedDocument.StatusInfo, UpdateSourceTrigger=PropertyChanged}" 
+                            FontSize="12"
+                            Width="420" 
+                            Margin="5,5,0,0" />
+                    </StackPanel>
+                    <Separator Margin="5,0,5,0" Foreground="LightGray" />
+
+                    <!-- DOCUMENT ANNOTATION -->
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
+                            <Label
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="Аннотация к документу: " 
+                                FontSize="12"
+                                Width="200" 
+                                Margin="0,5,0,0" />
+                            <Label
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="(заполняется по необходимости)" 
+                                FontSize="12"
+                                Width="200" 
+                                Margin="0,5,0,0" />
+                        </StackPanel>
+                        <TextBox                             
+                            Width="420" 
+                  
+                            Height="50"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Visible"
+                            AcceptsReturn="True"
+                            IsEnabled="{Binding IsAdminOrCreator}"
+                            Text="{Binding SelectedDocument.Annotation,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                   
+                            FontSize="12"
+                            Margin="5,10,0,0" />
+                    </StackPanel>
+
+                    <!-- DOCUMENT BOTTOM MENU -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button 
+                            HorizontalAlignment="Left"
+                            Padding="12,0,12,0"
+                            Margin="5,20,5,0"
+                            Content="Добавить к набору"
+                            Height="30"
+                            FontSize="14"
+                            Command="{Binding AddLink}" />
+                        <!-- Add to link package button -->
+                        <Button 
+                            HorizontalAlignment="Left"
+                            Padding="12,0,12,0"
+                            Margin="5,20,5,0"
+                            Content="Заменить файл"
+                            Height="30"
+                            FontSize="14"
+                            Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVis}}"
+                            Command="{Binding ReplaceFile}" />
+                        <!-- Access control button -->
+                        <Button 
+                            HorizontalAlignment="Left"
+                            Padding="12,0,12,0"
+                            Margin="5,20,5,0"
+                            Content="Cохранить изменения"
+                            Height="30"
+                            FontSize="14"
+                            Visibility="{Binding IsAdminOrCreator, Converter={StaticResource BoolToVis}}"
+                            Command="{Binding SaveDocumentChanges}" />
+                        <!-- Save changes button -->
+                        <Button 
+                            HorizontalAlignment="Left"
+                            Padding="10,0,9,0"
+                            Margin="5,20,5,0"
+                            Content="Удалить из базы"
+                            Height="30"
+                            FontSize="14"
+                            Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVis}}"
+                            Command="{Binding DeleteDocument}" />
+                        <!-- Delete folder button -->
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- LINK PACKAGE -->
+                <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Left" 
+                        Margin="20,40,0,0" 
+                        Visibility="{Binding PackageVisible, 
+                                    Converter={StaticResource BoolToVis}, 
+                                    UpdateSourceTrigger=PropertyChanged}">
+                    <!-- TITLE -->
+                    <Label
+                    Content="Набор "
+                    Foreground="{StaticResource PrimaryTitleBrush}"
+                    FontSize="24"
+                    Margin="0,0,0,20" />
+
+                    <!-- PACKAGE TOP MENU -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="5,0,5,5"
+                                Content="Отправить в сообщении"
+                                Height="30"
+                                FontSize="14"
+                                Command="{Binding SendPackage}" 
+                                />
+                        <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="40,0,5,5"
+                                Content="Использовать для вставки"
+                                Visibility="{Binding IsSuperUser, Converter={StaticResource BoolToVis}}"
+                                Height="30"
+                                FontSize="14"
+                                Command="{Binding PastePackage}" 
+                                />
+                        <Button 
+                                HorizontalAlignment="Right"
+                                Padding="12,0,12,0"
+                                Margin="25,0,5,5"
+                                Content="Запросить копии"
+                                Height="30"
+                                FontSize="14"
+                                Command="{Binding RequestPackageCopy}" 
+                                />
+                    </StackPanel>
+
+                    <!-- PACKAGE LISTVIEW -->
+                    <ListView Name="PackageListView"
+                              Width="620"
+                              HorizontalAlignment="Left"
+                              Margin="5,15,0,0"
+                              SelectionMode="Extended"
+                              ItemsSource="{Binding Path=PackageLinks, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedItem="{Binding Path=SelectedLink}" MouseDoubleClick="PackageListView_MouseDoubleClick">
+
+                        <ListView.Resources>
+                            <Style TargetType="ListViewItem">
+                                <Style.Triggers>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="IsSelected" Value="True"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Resources>
+
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Тип объекта" Width="105" DisplayMemberBinding="{Binding Path=LocalizedLinkedType}" />
+                                <GridViewColumn Header="Имя объекта" Width="405" DisplayMemberBinding="{Binding Path=LinkedName}" />
+                                <GridViewColumn Header="ID объекта" Width="Auto" DisplayMemberBinding="{Binding Path=LinkedID}" />
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <Button Content="X" 
+                                                    Style="{StaticResource XButtonStyle}"
+                                                    Command="{Binding 
+                                                                Path=DataContext.RemoveLink, 
+                                                                RelativeSource=
+                                                                {RelativeSource FindAncestor, 
+                                                                AncestorType={x:Type ItemsControl}}}"
+                                            />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

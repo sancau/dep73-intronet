@@ -1,0 +1,321 @@
+﻿<Window x:Class="DB73.Views.EditToolView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Управление инвентарной позицией (Отдел №73 Испытательный)"
+        xmlns:vm="clr-namespace:DB73.ViewModels"
+                
+        Width="1000"
+        Height="800"
+
+        ResizeMode="NoResize"
+        
+        WindowStartupLocation="CenterScreen"
+        Background="AliceBlue"
+        >
+
+    <Window.Resources>
+        <ResourceDictionary Source="_resources.xaml"/>
+    </Window.Resources>
+
+    <ScrollViewer   ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.CanContentScroll="True">
+
+        <StackPanel Orientation="Horizontal">
+
+            <!-- LEFT PANEL -->
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Margin="40,20,0,10">
+
+                <Label
+                   Content="Новое сообщение" 
+                   Foreground="{StaticResource PrimaryTitleBrush}"
+                   FontSize="24" />
+
+                <Label 
+                   Foreground="{StaticResource PrimaryTitleBrush}"
+                   Content="Список адресатов и текст сообщения" 
+                   FontSize="12"
+                   Margin="2,5,0,10" />
+
+
+
+                <StackPanel Orientation="Horizontal">
+
+                    <ListView Name="FolderUserListView" 
+                              Margin="5,10,0,0" 
+                              Width="200"
+                              SelectionMode="Extended"
+                              ItemsSource="{Binding MessageUserList, UpdateSourceTrigger=PropertyChanged, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                              SelectedItem="{Binding SelectedUser}"                    
+                              Validation.ErrorTemplate="{StaticResource ErrorTemplate}">
+
+                        <ListView.Resources>
+                            <Style TargetType="ListViewItem">
+                                <Style.Triggers>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="IsSelected" Value="True"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Resources>
+
+                        <ListView.View>
+                            <GridView >
+                                <GridViewColumn Header="Фамилия" Width="100" DisplayMemberBinding="{Binding Path=LastName}" />
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <Button Content="X" 
+                                                        Style="{StaticResource XButtonStyle}"
+                                                        Command="{Binding 
+                                                                    Path=DataContext.RemoveUser, 
+                                                                    RelativeSource=
+                                                                    {RelativeSource FindAncestor, 
+                                                                    AncestorType={x:Type ItemsControl}}}"
+                                                />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+                    <ListView Name="AllUserListView" 
+                              Margin="20,10,0,0" 
+                              Width="200"
+                              SelectionMode="Extended"
+                              ItemsSource="{Binding AllUserList, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedItem="{Binding SelectedUser}">
+
+                        <ListView.Resources>
+                            <Style TargetType="ListViewItem">
+                                <Style.Triggers>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="IsSelected" Value="True"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Resources>
+
+                        <ListView.View>
+                            <GridView >
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <Button Content="&#8678; Добавить" 
+                                                        Style="{StaticResource XButtonStyle}"
+                                                        Command="{Binding 
+                                                                    Path=DataContext.AddUser, 
+                                                                    RelativeSource=
+                                                                    {RelativeSource FindAncestor, 
+                                                                    AncestorType={x:Type ItemsControl}}}"
+                                                />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Фамилия" Width="100" DisplayMemberBinding="{Binding Path=LastName}" />
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+
+                    <Label 
+                        Foreground="{StaticResource ContentFontBrush}"
+                        Content="Тема: " 
+                        FontSize="12"
+                        Width="100" 
+                        Margin="0,5,0,0" />
+
+
+                    <TextBox                             
+                        Width="320" 
+                 
+                        Text="{Binding Path=NewMessage.MessageTitle, 
+                                        Mode=TwoWay, 
+                                        ValidatesOnDataErrors=True, 
+                                        NotifyOnValidationError=True, 
+                                        ValidatesOnExceptions=True}"
+                        Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                    
+                        FontSize="12"
+                        Margin="5,10,0,0" />
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+
+                    <Label
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Сообщение: " 
+                            FontSize="12"
+                            Width="100" 
+                            Margin="0,5,0,0" />
+
+                    <TextBox
+                        Width="320"  
+                    
+                        Height="150"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Visible"
+                        AcceptsReturn="True"                        
+                        Text="{Binding Path=NewMessage.MessageBody, 
+                                       Mode=TwoWay, 
+                                       ValidatesOnDataErrors=True, 
+                                       NotifyOnValidationError=True, 
+                                       ValidatesOnExceptions=True}"
+                        
+                        Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                    
+                        FontSize="12"
+                        Margin="5,10,0,0" />
+
+                </StackPanel>
+
+                <Button 
+                            HorizontalAlignment="Left"
+                            Padding="12,0,12,0"
+                            Margin="5,30,5,0"
+                            Content="Отправить сообщение"
+                            Height="30"
+                            FontSize="14"
+                            Command="{Binding SendMessage}" />
+
+                <Label
+                    Margin="0,20,0,0"
+                    Content="Прикрепленные ссылки"
+                    Foreground="{StaticResource PrimaryTitleBrush}"
+                    FontSize="24" />
+
+                <!-- PACKAGE LISTVIEW -->
+                <ListView Name="PackageListView"
+                              Width="420"
+                              HorizontalAlignment="Left"
+                              Margin="5,15,0,0"
+                              SelectionMode="Extended"
+                              ItemsSource="{Binding Path=MessageLinks, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedItem="{Binding Path=SelectedLink}">
+
+                    <ListView.Resources>
+                        <Style TargetType="ListViewItem">
+                            <Style.Triggers>
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="IsSelected" Value="True"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Resources>
+
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Тип объекта" Width="95" DisplayMemberBinding="{Binding Path=LocalizedLinkedType}" />
+                            <GridViewColumn Header="Имя объекта" Width="240" DisplayMemberBinding="{Binding Path=LinkedName}" />
+                            <GridViewColumn Header="ID" Width="Auto" DisplayMemberBinding="{Binding Path=LinkedID}" />
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <Button Content="X" 
+                                                    Style="{StaticResource XButtonStyle}"
+                                                    Command="{Binding 
+                                                                Path=DataContext.RemoveLink, 
+                                                                RelativeSource=
+                                                                {RelativeSource FindAncestor, 
+                                                                AncestorType={x:Type ItemsControl}}}"
+                                            />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+
+                </ListView>
+
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Margin="40,20,0,10">
+
+                <Label
+                   Content="Ссылки в системе" 
+                   Foreground="{StaticResource PrimaryTitleBrush}"
+                   FontSize="24" />
+
+                <Label 
+                   Foreground="{StaticResource PrimaryTitleBrush}"
+                   Content="Добавьте необходимые ссылки к сообщению" 
+                   FontSize="12"
+                   Margin="2,5,0,10" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0, 8" Width="340">
+                    <!-- Search Label -->
+                    <Label  HorizontalAlignment="Left"
+                                    Foreground="{StaticResource PrimaryTitleBrush}"
+                                    Content="Поиск:" 
+                                    FontSize="12"
+                                    FontWeight="Normal"  
+                                    Margin="2,0,0,0" />
+                    <!-- SearchString -->
+                    <TextBox HorizontalAlignment="Left" 
+                                     Width="405" Height="20" 
+                                     Margin="0,0,0,0" 
+                                     Text="{Binding SystemLinksSearchString, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!-- PACKAGE LISTVIEW -->
+                <ListView Name="AllLinksListView"
+                              Width="450"
+                              HorizontalAlignment="Left"
+                              Margin="5,10,0,0" 
+                              SelectionMode="Extended"
+                              ItemsSource="{Binding Path=FilteredLinks, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedItem="{Binding Path=SelectedLink}">
+
+                    <ListView.Resources>
+                        <Style TargetType="ListViewItem">
+                            <Style.Triggers>
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="IsSelected" Value="True"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Resources>
+
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <Button Content="&#8678; Добавить" 
+                                                        Style="{StaticResource XButtonStyle}"
+                                                        Command="{Binding 
+                                                                    Path=DataContext.AddLink, 
+                                                                    RelativeSource=
+                                                                    {RelativeSource FindAncestor, 
+                                                                    AncestorType={x:Type ItemsControl}}}"
+                                                />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Тип объекта" Width="88" DisplayMemberBinding="{Binding Path=LocalizedLinkedType}" />
+                            <GridViewColumn Header="Имя объекта" Width="240" DisplayMemberBinding="{Binding Path=LinkedName}" />
+                            <GridViewColumn Header="ID " Width="30" DisplayMemberBinding="{Binding Path=LinkedID}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

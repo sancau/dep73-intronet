@@ -1,0 +1,1044 @@
+﻿<Window x:Class="DB73.Views.NewInventoryItemView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Новая инвентарная позиция (Отдел №73 Испытательный)"
+        xmlns:vm="clr-namespace:DB73.ViewModels"
+                
+        Width="700"
+        Height="890"
+
+        ResizeMode="NoResize"
+        
+        WindowStartupLocation="CenterScreen"
+        Background="AliceBlue"
+        >
+
+    <Window.Resources>
+        <ResourceDictionary Source="_resources.xaml"/>
+    </Window.Resources>
+    <ScrollViewer   ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.CanContentScroll="True">
+
+        <!-- CONTENT -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Margin="40,20,0,10">
+            <!-- TITLE -->
+            <Label
+                   Content="{Binding Title, UpdateSourceTrigger=PropertyChanged}" 
+                   Foreground="{StaticResource PrimaryTitleBrush}"
+                   FontSize="24" />
+            <!-- SUB TITLE -->
+            <Label 
+                   Foreground="{StaticResource PrimaryTitleBrush}"
+                   Content="{Binding SubTitle, UpdateSourceTrigger=PropertyChanged}" 
+                   FontSize="14"
+                   Margin="2,5,0,10" />
+            <!-- TYPE CHOOSE MENU -->
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,10,0,0"
+                        Visibility="{Binding TypeChoosePanelVisible, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
+                <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="5,0,5,5"
+                                Content="Испытательные системы"
+                                Height="30"
+                                FontSize="14"
+                                Command="{Binding TestSystemChosen}" 
+                                />
+                <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="5,0,5,5"
+                                Content="Средства измерений и приборы"
+                                Height="30"
+                                FontSize="14"
+                                Command="{Binding ToolChosen}" 
+                                />
+                <Button 
+                                HorizontalAlignment="Left"
+                                Padding="12,0,12,0"
+                                Margin="5,0,5,5"
+                                Content="Прочие позиции"
+                                Height="30"
+                                FontSize="14"         
+                                Command="{Binding MiscItemChosen}" 
+                                />
+            </StackPanel>
+            <!-- ITEM VIEW -->
+            <!-- 1. MISCITEM VIEW -->
+            <StackPanel Margin="2,10,0,0" Visibility="{Binding MiscItemFieldsVisible, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
+                <Grid HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"></ColumnDefinition>
+                        <ColumnDefinition Width="330"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <!-- ROW 0 NAME -->
+                    <Label
+                            Grid.Row="0" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Наименование позиции: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="0" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"                                                      
+                            FontSize="12"
+                            Margin="5,10,0,0" 
+                    
+                            Text="{Binding Path=NewItem.Name, 
+                                        Mode=TwoWay, 
+                                        ValidatesOnDataErrors=True, 
+                                        NotifyOnValidationError=True, 
+                                        ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+
+                        />
+                    <!-- ROW 1 CODE -->
+                    <Label 
+                            Grid.Row="1" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Код: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox     
+                            Grid.Row="1" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"
+                   
+                            Text="{Binding Path=NewItem.Code,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                        />
+                    <!-- ROW 2 INVENTORY NUMBER -->
+                    <Label 
+                            Grid.Row="2" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Номенклатурный или инвентарный номер: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox    
+                            Grid.Row="2" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"
+                    
+                            Text="{Binding Path=NewItem.InventoryNumber, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                        />
+                    <!-- ROW 3 UNIT -->
+                    <Label 
+                            Grid.Row="3" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Единица измерения: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="3" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"  
+                    
+                            Text="{Binding Path=NewItem.Unit, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"               
+                        />
+                    <!-- ROW 4 PRICE -->
+                    <Label 
+                            Grid.Row="4" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Цена, руб.: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox   
+                            Grid.Row="4" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"     
+                    
+                            Text="{Binding Path=NewItem.Price,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                                                
+                        />
+                    <!-- ROW 5 QUANTITY -->
+                    <Label 
+                            Grid.Row="5" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическое наличие (количество): " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox    
+                            Grid.Row="5" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"   
+                    
+                            Text="{Binding Path=NewItem.Quantity,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                    <!-- ROW 6 TOTAL PRICE -->
+                    <Label 
+                            Grid.Row="6" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическая стоимость (сумма, руб.): " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            IsReadOnly="True"                           
+                            Grid.Row="6" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0" 
+                    
+                            Text="{Binding Path=NewItem.TotalPrice,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                    <!-- ROW 7 ACTUAL PLACEMENT -->
+                    <Label 
+                            Grid.Row="7" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическое расположение: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="7" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"   
+                    
+                            Text="{Binding Path=NewItem.ActualPlacement,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                </Grid>
+                <Button 
+                        HorizontalAlignment="Left"
+                        Padding="12,0,12,0"
+                        Margin="2,30,5,5"
+                        Content="Добавить позицию"
+                        Height="30"
+                        FontSize="14"         
+                        Command="{Binding AddItem}" 
+                        />
+            </StackPanel>
+            <!-- 2. TOOL VIEW -->
+            <StackPanel Margin="2,10,0,0" Visibility="{Binding ToolFieldsVisible, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
+                <!-- EQUIPMENT INFO -->
+                <Grid HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"></ColumnDefinition>
+                        <ColumnDefinition Width="330"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <!--ITEM INFO-->
+                    <!-- ROW 0 NAME -->
+                    <Label
+                            Grid.Row="0" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Название прибора: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="0" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"                                                      
+                            FontSize="12"
+                            Margin="5,10,0,0" 
+                    
+                            Text="{Binding Path=NewItem.Name, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                        />
+                    <!-- ROW 1 LAST TEST DATE -->
+                    <Label 
+                            Grid.Row="1" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Дата поверки: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                        <DatePicker                            
+                            Style="{StaticResource IconOnlyDatePicker}"
+                    
+                            SelectedDate="{Binding NewItem.LastTestDate,
+                                           Mode=TwoWay, 
+                                           ValidatesOnDataErrors=True}"
+                            DisplayDate="{Binding DateTime.Now}"
+                                                                        
+                            Margin="2,10,0,0"
+                            />
+                        <Label 
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="Актуальная дата: " 
+                                FontSize="12"
+                                Width="auto" 
+                                Margin="0,10,0,0"
+                            />
+                        <Label 
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="{Binding NewItem.LocalizedStringLastTestDate, UpdateSourceTrigger=PropertyChanged}" 
+                                FontSize="12"
+                                Width="auto" 
+                                Margin="0,10,0,0"
+                            />
+                    </StackPanel>
+                    <!-- ROW 2 NEXT TEST DATE -->
+                    <Label 
+                            Grid.Row="2" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Срок поверки: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                        <DatePicker                            
+                            Style="{StaticResource IconOnlyDatePicker}"
+                    
+                            SelectedDate="{Binding NewItem.NextTestDate,
+                                           Mode=TwoWay, 
+                                           ValidatesOnDataErrors=True}"
+                            DisplayDate="{Binding DateTime.Now}"
+                                                                        
+                            Margin="2,10,0,0"
+                            />
+                        <Label 
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="Актуальная дата: " 
+                                FontSize="12"
+                                Width="auto" 
+                                Margin="0,10,0,0"
+                            />
+                        <Label 
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="{Binding NewItem.LocalizedStringNextTestDate, UpdateSourceTrigger=PropertyChanged}" 
+                                FontSize="12"
+                                Width="auto" 
+                                Margin="0,10,0,0"
+                            />
+                    </StackPanel>
+                    <!-- ROW 3 MANUFACTURER -->
+                    <Label 
+                            Grid.Row="3" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Производитель: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="3" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"  
+                    
+                            Text="{Binding NewItem.Manufacturer, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"               
+                        />
+                    <!-- ROW 4 YEAR OF PRODUCTION-->
+                    <Label 
+                            Grid.Row="4" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Год выпуска: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox   
+                                Grid.Row="4" Grid.Column="1"
+                                Width="325" 
+                                FontWeight="Bold"
+                                FontSize="12"
+                                Margin="5,10,0,0"     
+                    
+                                Text="{Binding NewItem.YearOfProduction,
+                                                Mode=TwoWay, 
+                                                ValidatesOnDataErrors=True, 
+                                                NotifyOnValidationError=True, 
+                                                ValidatesOnExceptions=True}"
+                    
+                                Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                                                
+                        />
+                    <!-- Row 5 SPECIFICATION -->
+                    <Label 
+                            Grid.Row="5" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Технические характеристики:" 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox    
+                            Grid.Row="5" Grid.Column="1"
+                            Width="325" 
+                            Height="80"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Visible"
+                            AcceptsReturn="True"
+                    
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"   
+                    
+                            Text="{Binding Path=NewItem.Specification,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}" 
+                        />
+                </Grid>
+                <Separator Margin="0,10,0,10"/>
+                <!-- INVENTORY INFO -->
+                <Grid  HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"></ColumnDefinition>
+                        <ColumnDefinition Width="330"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <!-- ROW 0 CODE -->
+                    <Label 
+                            Grid.Row="0" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Код: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox     
+                            Grid.Row="0" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"
+                    
+                            Text="{Binding Path=NewItem.Code,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                        />
+                    <!-- ROW 1 INVENTORY NUMBER -->
+                    <Label 
+                            Grid.Row="1" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Номенклатурный или инвентарный номер: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox    
+                            Grid.Row="1" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"
+                    
+                            Text="{Binding NewItem.InventoryNumber, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                        />
+                    <!-- ROW 2 UNIT -->
+                    <Label 
+                    Grid.Row="2" Grid.Column="0"
+                    Foreground="{StaticResource ContentFontBrush}"
+                    Content="Единица измерения: " 
+                    FontSize="12"
+                    Margin="0,5,0,0"
+                />
+                    <TextBox  
+                            Grid.Row="2" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"  
+                    
+                            Text="{Binding Path=NewItem.Unit, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"               
+                        />
+                    <!-- ROW 3 PRICE -->
+                    <Label 
+                            Grid.Row="3" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Цена, руб.: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox   
+                            Grid.Row="3" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"     
+                    
+                            Text="{Binding Path=NewItem.Price,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                                                
+                        />
+                    <!-- ROW 4 QUANTITY -->
+                    <Label 
+                            Grid.Row="4" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическое наличие (количество): " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox    
+                            Grid.Row="4" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"   
+                    
+                            Text="{Binding NewItem.Quantity,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                    <!-- ROW 5 TOTAL PRICE -->
+                    <Label 
+                            Grid.Row="5" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическая стоимость (сумма, руб.): " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            IsReadOnly="True"        
+                            Grid.Row="5" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0" 
+                    
+                            Text="{Binding NewItem.TotalPrice,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                    <!-- ROW 6 ACTUAL PLACEMENT -->
+                    <Label 
+                            Grid.Row="6" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическое расположение: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="6" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"   
+                    
+                            Text="{Binding NewItem.ActualPlacement,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                </Grid>
+                <Button 
+                        HorizontalAlignment="Left"
+                        Padding="12,0,12,0"
+                        Margin="2,30,5,5"
+                        Content="Добавить позицию"
+                        Height="30"
+                        FontSize="14"         
+                        Command="{Binding AddItem}" 
+                        />
+            </StackPanel>
+            <!-- 3. TEST SYSTEM VIEW -->
+            <StackPanel Margin="2,10,0,0" Visibility="{Binding TestSystemFieldsVisible, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
+                <!-- EQUIPMENT INFO -->
+                <Grid HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"></ColumnDefinition>
+                        <ColumnDefinition Width="330"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <!--ITEM INFO-->
+                    <!-- ROW 0 NAME -->
+                    <Label
+                            Grid.Row="0" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Название установки: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="0" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"                                                      
+                            FontSize="12"
+                            Margin="5,10,0,0" 
+                    
+                            Text="{Binding NewItem.Name, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                        />
+                    <!-- ROW 1 SYSTEM PURPOSE -->
+                    <Label
+                            Grid.Row="1" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Назначение установки: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                     />
+                    <ListBox Grid.Row="1" Grid.Column="1"
+                             Margin="10,15,10,0"
+                             Padding="0,5,5,5"
+                             ItemsSource="{Binding Path=TypeSource}" 
+                             SelectedItem="{Binding NewItem.Purpose,
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"    
+                    />
+                    <!-- ROW 2 LAST TEST DATE -->
+                    <Label 
+                            Grid.Row="2" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Дата аттестации: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                        <DatePicker                            
+                            Style="{StaticResource IconOnlyDatePicker}"
+                    
+                            SelectedDate="{Binding NewItem.LastTestDate,
+                                           Mode=TwoWay, 
+                                           ValidatesOnDataErrors=True}"
+                            DisplayDate="{Binding DateTime.Now}"
+                                                                        
+                            Margin="2,10,0,0"
+                            />
+                        <Label 
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="Актуальная дата: " 
+                                FontSize="12"
+                                Width="auto" 
+                                Margin="0,10,0,0"
+                            />
+                        <Label 
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="{Binding NewItem.LocalizedStringLastTestDate, UpdateSourceTrigger=PropertyChanged}" 
+                                FontSize="12"
+                                Width="auto" 
+                                Margin="0,10,0,0"
+                            />
+                    </StackPanel>
+                    <!-- ROW 3 NEXT TEST DATE -->
+                    <Label 
+                            Grid.Row="3" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Срок аттестации: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
+                        <DatePicker                            
+                            Style="{StaticResource IconOnlyDatePicker}"
+                    
+                            SelectedDate="{Binding NewItem.NextTestDate,
+                                           Mode=TwoWay, 
+                                           ValidatesOnDataErrors=True}"
+                            DisplayDate="{Binding DateTime.Now}"
+                                                                        
+                            Margin="2,10,0,0"
+                            />
+                        <Label 
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="Актуальная дата: " 
+                                FontSize="12"
+                                Width="auto" 
+                                Margin="0,10,0,0"
+                            />
+                        <Label 
+                                Foreground="{StaticResource ContentFontBrush}"
+                                Content="{Binding NewItem.LocalizedStringNextTestDate, UpdateSourceTrigger=PropertyChanged}" 
+                                FontSize="12"
+                                Width="auto" 
+                                Margin="0,10,0,0"
+                            />
+                    </StackPanel>
+                    <!-- ROW 4 MANUFACTURER -->
+                    <Label 
+                            Grid.Row="4" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Производитель: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="4" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"  
+                    
+                            Text="{Binding NewItem.Manufacturer, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"               
+                        />
+                    <!-- ROW 5 YEAR OF PRODUCTION-->
+                    <Label 
+                            Grid.Row="5" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Год выпуска: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox   
+                                Grid.Row="5" Grid.Column="1"
+                                Width="325" 
+                                FontWeight="Bold"
+                                FontSize="12"
+                                Margin="5,10,0,0"     
+                    
+                                Text="{Binding NewItem.YearOfProduction,
+                                                Mode=TwoWay, 
+                                                ValidatesOnDataErrors=True, 
+                                                NotifyOnValidationError=True, 
+                                                ValidatesOnExceptions=True}"
+                    
+                                Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                                                
+                        />
+                    <!-- Row 6 SPECIFICATION -->
+                    <Label 
+                            Grid.Row="6" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Технические характеристики:" 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox    
+                            Grid.Row="6" Grid.Column="1"
+                            Width="325" 
+                            Height="80"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Visible"
+                            AcceptsReturn="True"
+                    
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"   
+                    
+                            Text="{Binding NewItem.Specification,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}" 
+                        />
+                </Grid>
+                <Separator Margin="0,20,0,10"/>
+                <!-- INVENTORY INFO -->
+                <Grid  HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"></ColumnDefinition>
+                        <ColumnDefinition Width="330"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <!-- ROW 0 CODE -->
+                    <Label 
+                            Grid.Row="0" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Код: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox     
+                            Grid.Row="0" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"
+                    
+                            Text="{Binding Path=NewItem.Code,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                        />
+                    <!-- ROW 1 INVENTORY NUMBER -->
+                    <Label 
+                            Grid.Row="1" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Номенклатурный или инвентарный номер: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox    
+                            Grid.Row="1" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"
+                    
+                            Text="{Binding NewItem.InventoryNumber, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                        />
+                    <!-- ROW 2 UNIT -->
+                    <Label 
+                    Grid.Row="2" Grid.Column="0"
+                    Foreground="{StaticResource ContentFontBrush}"
+                    Content="Единица измерения: " 
+                    FontSize="12"
+                    Margin="0,5,0,0"
+                />
+                    <TextBox  
+                            Grid.Row="2" Grid.Column="1"
+                            Width="325"
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"  
+                    
+                            Text="{Binding Path=NewItem.Unit, 
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"               
+                        />
+                    <!-- ROW 3 PRICE -->
+                    <Label 
+                            Grid.Row="3" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Цена, руб.: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox   
+                            Grid.Row="3" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"
+                            FontSize="12"
+                            Margin="5,10,0,0"     
+                    
+                            Text="{Binding Path=NewItem.Price,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"                                                
+                        />
+                    <!-- ROW 4 QUANTITY -->
+                    <Label 
+                            Grid.Row="4" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическое наличие (количество): " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox    
+                            Grid.Row="4" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"   
+                    
+                            Text="{Binding NewItem.Quantity,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                    <!-- ROW 5 TOTAL PRICE -->
+                    <Label 
+                            Grid.Row="5" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическая стоимость (сумма, руб.): " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            IsReadOnly="True"        
+                            Grid.Row="5" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0" 
+                    
+                            Text="{Binding NewItem.TotalPrice,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                    <!-- ROW 6 ACTUAL PLACEMENT -->
+                    <Label 
+                            Grid.Row="6" Grid.Column="0"
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Фактическое расположение: " 
+                            FontSize="12"
+                            Margin="0,5,0,0"
+                        />
+                    <TextBox  
+                            Grid.Row="6" Grid.Column="1"
+                            Width="325" 
+                            FontWeight="Bold"                                                        
+                            FontSize="12"
+                            Margin="5,10,0,0"   
+                    
+                            Text="{Binding NewItem.ActualPlacement,
+                                            Mode=TwoWay, 
+                                            ValidatesOnDataErrors=True, 
+                                            NotifyOnValidationError=True, 
+                                            ValidatesOnExceptions=True}"
+                    
+                            Validation.ErrorTemplate="{StaticResource ErrorTemplate}"            
+                        />
+                </Grid>
+                <Button 
+                        HorizontalAlignment="Left"
+                        Padding="12,0,12,0"
+                        Margin="2,30,5,5"
+                        Content="Добавить позицию"
+                        Height="30"
+                        FontSize="14"         
+                        Command="{Binding AddItem}" 
+                        />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

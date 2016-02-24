@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB73", "DB73\DB73.csproj", "{FBF40AE9-DF58-4515-BFFB-9698EF38F71F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB73.BL", "DB73.BL\DB73.BL.csproj", "{C04C55A9-BBD6-455E-8C06-D6BD9CDD01DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB73.Models", "DB73.Models\DB73.Models.csproj", "{BACB4B45-4D5A-42EF-BADD-C45ADD48FBDD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBF40AE9-DF58-4515-BFFB-9698EF38F71F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBF40AE9-DF58-4515-BFFB-9698EF38F71F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBF40AE9-DF58-4515-BFFB-9698EF38F71F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBF40AE9-DF58-4515-BFFB-9698EF38F71F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C04C55A9-BBD6-455E-8C06-D6BD9CDD01DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C04C55A9-BBD6-455E-8C06-D6BD9CDD01DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C04C55A9-BBD6-455E-8C06-D6BD9CDD01DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C04C55A9-BBD6-455E-8C06-D6BD9CDD01DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BACB4B45-4D5A-42EF-BADD-C45ADD48FBDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BACB4B45-4D5A-42EF-BADD-C45ADD48FBDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BACB4B45-4D5A-42EF-BADD-C45ADD48FBDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BACB4B45-4D5A-42EF-BADD-C45ADD48FBDD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

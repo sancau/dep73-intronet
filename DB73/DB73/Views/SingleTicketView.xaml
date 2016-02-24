@@ -1,0 +1,243 @@
+﻿<Window x:Class="DB73.Views.SingleTicketView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Отдел №73 Испытательный"
+        xmlns:vm="clr-namespace:DB73.ViewModels"
+                
+        Width="600"
+        Height="710"
+
+        ResizeMode="NoResize"
+        
+        WindowStartupLocation="CenterScreen"
+        Background="AliceBlue"
+        >
+
+    <Window.Resources>
+        <ResourceDictionary Source="_resources.xaml"/>
+    </Window.Resources>
+
+    <ScrollViewer   ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.CanContentScroll="True">
+
+        <StackPanel Orientation="Horizontal">
+
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Margin="40,20,0,10">
+
+                <Label
+               Content="Заявка / Сообщение об ошибке" 
+               Foreground="{StaticResource PrimaryTitleBrush}"
+               FontSize="24" 
+                />
+                <Label 
+               Foreground="{StaticResource PrimaryTitleBrush}"
+               Content="Информация о заявке" 
+               FontSize="14"
+               Margin="0,5,0,10"
+                />
+
+                <StackPanel Orientation="Horizontal">
+                    <Label 
+                    Foreground="{StaticResource ContentFontBrush}"
+                    Content="Тема: " 
+                    FontSize="12"
+                    Width="100" 
+                    Margin="0,5,0,0"
+                />
+                    <StackPanel Orientation="Vertical">
+                        <TextBox  
+                                
+                        Width="400" 
+                        FontWeight="Bold"
+                        IsEnabled="False"
+                    
+                        Text="{Binding Path=Ticket.TicketTitle, 
+                                       Mode=TwoWay, 
+                                       ValidatesOnDataErrors=True, 
+                                       NotifyOnValidationError=True, 
+                                       ValidatesOnExceptions=True}"
+                        Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                    
+                        FontSize="12"
+                        Margin="5,10,0,0" 
+                    />
+                    </StackPanel>
+                </StackPanel>
+
+
+
+                <StackPanel Orientation="Horizontal">
+
+                    <StackPanel Orientation="Vertical">
+
+                        <Label
+                    		Foreground="{StaticResource ContentFontBrush}"
+                    		Content="Сообщение: " 
+                    		FontSize="12"
+                    		Width="100" 
+                    		Margin="0,5,0,0"
+                    />
+
+                    </StackPanel>
+
+                    <TextBox                             
+                    Width="400" 
+                    FontWeight="Bold"
+                    IsEnabled="False"
+                    
+                    Height="150"
+                    TextWrapping="Wrap"
+                    VerticalScrollBarVisibility="Visible"
+                    AcceptsReturn="True"
+                    
+                    Text="{Binding Ticket.TicketBody, Mode=TwoWay, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"
+                    Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                    
+                    FontSize="12"
+                    Margin="5,10,0,0"
+                />
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+
+                    <StackPanel Orientation="Vertical">
+
+                        <Label
+                            Foreground="{StaticResource ContentFontBrush}"
+                            Content="Ответ: " 
+                            FontSize="12"
+                            Width="100" 
+                            Margin="0,5,0,0"
+                        />
+
+                    </StackPanel>
+
+                    <TextBox                             
+                        Width="400" 
+                        FontWeight="Bold"
+                    
+                        Height="150"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Visible"
+                        AcceptsReturn="True"
+                        IsEnabled="{Binding Path=CanCloseTicket}"
+                        
+                        Text="{Binding Path=Ticket.Resolution}"
+                    
+                        FontSize="12"
+                        Margin="5,10,0,0"
+                    />
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+
+                    <Label
+                    	Foreground="{StaticResource ContentFontBrush}"
+                    	Content="Отправитель: " 
+                    	FontSize="12"
+                    	Width="100" 
+                    	Margin="0,5,0,0"
+                    />
+
+                    <Label
+                    	Foreground="{StaticResource ContentFontBrush}"
+                    	Content="{Binding Path=Sender}" 
+                    	FontSize="12"
+                    	Width="300" 
+                    	Margin="5,5,0,0"
+                    />
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+
+                    <Label
+                    	Foreground="{StaticResource ContentFontBrush}"
+                    	Content="Дата подачи: " 
+                    	FontSize="12"
+                    	Width="100" 
+                    	Margin="0,5,0,0"
+                    />
+
+                    <Label
+                    	Foreground="{StaticResource ContentFontBrush}"
+                    	Content="{Binding Path=Ticket.LocalizedStringAddDate}" 
+                    	FontSize="12"
+                    	Width="300" 
+                    	Margin="5,5,0,0"
+                    />
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+
+                    <Label
+                    	Foreground="{StaticResource ContentFontBrush}"
+                    	Content="Обработал: " 
+                    	FontSize="12"
+                    	Width="100" 
+                    	Margin="0,5,0,0"
+                    />
+
+                    <Label
+                    	Foreground="{StaticResource ContentFontBrush}"
+                    	Content="{Binding Path=Closer}" 
+                    	FontSize="12"
+                    	Width="300" 
+                    	Margin="5,5,0,0"
+                    />
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+
+                    <Label
+                    	Foreground="{StaticResource ContentFontBrush}"
+                    	Content="Дата обработки: " 
+                    	FontSize="12"
+                    	Width="100" 
+                    	Margin="0,5,0,0"
+                    />
+
+                    <Label
+                    	Foreground="{StaticResource ContentFontBrush}"
+                    	Content="{Binding Path=Ticket.LocalizedStringEditDate}" 
+                    	FontSize="12"
+                    	Width="300" 
+                    	Margin="5,5,0,0"
+                    />
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button 
+                        HorizontalAlignment="Left"
+                        Padding="12,0,12,0"
+                        Margin="5,20,5,0"
+                        Content="Закрыть заявку "
+                        Height="30"
+                        FontSize="14"
+                        Foreground="{StaticResource ContentFontBrightBrush}"
+                        Background="{StaticResource ActiveElementBackgroundBrush}"
+                        Visibility="{Binding Path=CanCloseTicket, Converter={StaticResource BoolToVis}}"
+                        Command="{Binding Path=CloseTicket}" 
+                    />
+                    <Button 
+                        HorizontalAlignment="Left"
+                        Padding="12,0,12,0"
+                        Margin="5,20,5,0"
+                        Content="Удалить заявку "
+                        Height="30"
+                        FontSize="14"
+                        Foreground="{StaticResource ContentFontBrightBrush}"
+                        Background="{StaticResource ActiveElementBackgroundBrush}"
+                        Visibility="{Binding Path=IsDeleteVisible, Converter={StaticResource BoolToVis}}"
+                        Command="{Binding Path=DeleteTicket}" 
+                    />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
